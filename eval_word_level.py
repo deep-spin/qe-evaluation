@@ -25,6 +25,8 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('system', help='System file')
     parser.add_argument('gold', help='Gold output file')
+    parser.add_argument('-v', help='Verbose, show additional metrics',
+                        action='store_true', dest='verbose')
     tag_type_group = parser.add_mutually_exclusive_group()
     tag_type_group.add_argument('-w', help='Only evaluate word tags',
                                 action='store_true', dest='only_words')
@@ -84,3 +86,9 @@ if __name__ == '__main__':
     print('F1 OK: %.4f' % f1_ok)
     print('F1 BAD: %.4f' % f1_bad)
     print('F1 Mult: %.4f' % f1_mult)
+
+    if args.verbose:
+        mcc_numerator = (tp * tn) - (fp * fn)
+        mcc_denominator = ((tp + fp) * (tp + fn) * (tn + fp) * (tn + fn)) ** 0.5
+        mcc = mcc_numerator / mcc_denominator
+        print('Matthews correlation: %.4f' % mcc)
