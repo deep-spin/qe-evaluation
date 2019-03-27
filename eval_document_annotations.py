@@ -194,7 +194,7 @@ class Evaluator(object):
                                             'major': 0.5,
                                             'critical': 1.0}}
 
-    def run(self, system, reference):
+    def run(self, system, reference, verbose=False):
         """Given system and reference documents, computes the macro-averaged F1
         across all documents.
 
@@ -214,8 +214,9 @@ class Evaluator(object):
             system_annotations = system[doc_id]
             f1 = self._compare_document(system_annotations,
                                         reference_annotations)
-            print(doc_id)
-            print(f1)
+            if verbose:
+                print(doc_id)
+                print(f1)
             total_f1 += f1
         total_f1 /= len(system)
         return total_f1
@@ -315,12 +316,14 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('system', help='System annotations')
     parser.add_argument('ref', help='Reference annotations')
+    parser.add_argument('-v', help='Show score by document',
+                        action='store_true', dest='verbose')
     args = parser.parse_args()
 
     system = load_annotations(args.system)
     reference = load_annotations(args.ref)
     evaluator = Evaluator()
-    f1 = evaluator.run(system, reference)
+    f1 = evaluator.run(system, reference, args.verbose)
     print('Final F1:', f1)
 
 
